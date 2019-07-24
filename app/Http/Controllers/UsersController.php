@@ -12,12 +12,11 @@ use Illuminate\Support\Str;
 class UsersController extends Controller
 {
     /**
-     *
      * @param Request $request
      * @param WechatService $service
      * @return mixed
      */
-    public function update(Request $request, WechatService $service)
+    public function updateInfo(Request $request, WechatService $service)
     {
         $user = Auth::guard('api')->user();
         $cacheKey = $cacheKey = User::$cacheSessionKeyPrefix. $user->id . User::$cacheSessionKeySuffix;
@@ -26,7 +25,7 @@ class UsersController extends Controller
             return $this->unauthorized('授权过期，请重新登录');
         }
 
-        $info = $service->decryptData($sessionKey, $request->only('iv'), $request->only('encrypted_data'));
+        $info = $service->decryptData($sessionKey, $request->input('iv'), $request->input('encrypted_data'));
         // 更新用户信息
         foreach ($info as $key => $value) {
             $key = Str::snake($key);

@@ -27,7 +27,8 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::get('products/scan', 'ProductsController@scan');
     Route::get('products/{store_product}', 'ProductsController@show');
     Route::post('products/upload_img', 'ProductsController@uploadImg');
-
     Route::put('products/{store_product}', 'ProductsController@update');
+
+    Route::post('users/info', 'UsersController@updateInfo');
 });
 

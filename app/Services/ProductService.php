@@ -8,8 +8,7 @@
 
 namespace App\Services;
 
-
-use App\Exceptions\InvalidHttpException;
+use App\Exceptions\BarcodeApiException;
 use App\Models\Product;
 use Illuminate\Support\Facades\Log;
 
@@ -24,7 +23,7 @@ class ProductService extends AbstractService
 
         if (!$response['code']) {
             Log::error('请求条形码api失败，错误原因：' . $response['msg']);
-            throw new InvalidHttpException($response['msg']);
+            throw new BarcodeApiException($response['msg']);
         }
 
         // 保存商品至数据库

@@ -14,6 +14,11 @@ use Illuminate\Support\Str;
 
 class ProductsController extends Controller
 {
+    /**
+     * 商品列表
+     * @param Request $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
     public function index(Request $request)
     {
         $query = StoreProduct::query()
@@ -87,7 +92,7 @@ class ProductsController extends Controller
      * @param Request $request
      * @param ProductService $service
      * @return mixed
-     * @throws \App\Exceptions\InvalidHttpException
+     * @throws \App\Exceptions\BarcodeApiException
      */
     public function scan(Request $request, ProductService $service)
     {
