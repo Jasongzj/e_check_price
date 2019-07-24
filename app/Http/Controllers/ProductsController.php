@@ -51,7 +51,7 @@ class ProductsController extends Controller
     {
         $product = Product::query()->find($request->input('pid'));
         if (!$product) {
-            return $this->failed('你要添加的商品不存在', 4002);
+            return $this->failed('你要添加的商品不存在', 40004);
         }
         $store = Auth::guard('api')->user()->store;
         $attribute = $request->only([
@@ -118,7 +118,7 @@ class ProductsController extends Controller
                 // 请求api，获取商品
                 $product = $service->storeOnlineProduct($barcode);
             }
-            return $this->notFound('在你的店铺查无该商品', 4001, $product);
+            return $this->notFound('在你的店铺查无该商品', 40003, $product);
         }
 
         return $this->success($storeProduct);

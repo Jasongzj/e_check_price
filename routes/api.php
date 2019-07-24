@@ -19,6 +19,10 @@ Route::group(['middleware' => 'auth:api'], function () {
     // 店铺管理
     Route::post('stores', 'StoresController@store');
     Route::post('stores/upload_img', 'StoresController@uploadImg');
+    // 店员列表
+    Route::get('stores/clerks', 'StoresController@clerksIndex');
+    Route::post('stores/clerks', 'StoresController@addClerk');
+    Route::delete('stores/clerks/{clerk}', 'StoresController@delClerk');
 
     // 商品管理
     Route::get('products', 'ProductsController@index');

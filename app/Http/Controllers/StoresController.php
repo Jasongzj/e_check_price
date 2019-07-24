@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ClerkResource;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -19,7 +20,7 @@ class StoresController extends Controller
     {
         $user = Auth::guard('api')->user();
         if ($user->store) {
-            return $this->failed('你已经有店铺了哦', 4002);
+            return $this->failed('你已经有店铺了哦', 40001);
         }
 
         $attribute = $request->only(['name', 'img']);
@@ -38,20 +39,55 @@ class StoresController extends Controller
     }
 
     /**
-     * 添加店员
+     * 成为店员
+     * @param Request $request
+     * @return mixed
      */
-    public function addClerk()
+    public function addClerk(Request $request)
     {
-
+        $user = Auth::guard('api')->user();
+        $user->update([
+            'store_id' => $request->input('store_id'),
+        ]);
+        return $this->message('添加成功');
     }
 
 
     /**
      * 移除店员
+     * @param User $clerk
+     * @return mixed
      */
-    public function delClerk()
+    public function delClerk(User $clerk)
     {
+        $user = Auth::guard('api')->user();
+        if (!$user->is_manager) {
+            return $this->failed('你不是店长哦', 40002);
+        }
+        if ($user->store_id != $clerk->store_id) {
+            return $this->failed('该用户不是你的店员', 40006);
+        }
 
+        $clerk->update(['store_id' => null]);
+        return $this->message('移除成功');
+    }
+
+    /**
+     * 店员列表
+     */
+    public function clerksIndex()
+    {
+        $user = Auth::guard('api')->user();
+        if (!$user->is_manager) {
+            return $this->failed('你不是店长哦',40002);
+        }
+
+        $clerks = User::query()->where('store_id', $user->store_id)
+            ->where('is_manager', 0)
+            ->select(['id', 'store_id', 'is_manager', 'nick_name', 'avatar_url'])
+            ->paginate();
+
+        return ClerkResource::collection($clerks);
     }
 
     /**

@@ -11,6 +11,6 @@ class BarcodeApiException extends Exception
 
     public function render()
     {
-        return $this->failed($this->getMessage(), 4003);
+        return $this->failed($this->getMessage(), 40005);
     }
 }
