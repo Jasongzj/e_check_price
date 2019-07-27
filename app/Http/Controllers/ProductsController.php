@@ -112,13 +112,16 @@ class ProductsController extends Controller
 
         if (!$storeProduct) {
             // 查找商品表中是否有该商品
-            $product = Product::query()->where('barcode', $barcode)->first();
+            $storeProduct = Product::query()->where('barcode', $barcode)->first();
 
-            if (!$product) {
+            if (!$storeProduct) {
                 // 请求api，获取商品
-                $product = $service->storeOnlineProduct($barcode);
+                $storeProduct = $service->storeOnlineProduct($barcode);
             }
-            return $this->notFound('在你的店铺查无该商品', 40003, $product);
+
+            $storeProduct->in_store = false;
+        } else {
+            $storeProduct->in_store = true;
         }
 
         return $this->success($storeProduct);
