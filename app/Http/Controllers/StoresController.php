@@ -46,6 +46,10 @@ class StoresController extends Controller
     public function addClerk(Request $request)
     {
         $user = Auth::guard('api')->user();
+        // 判断用户是否有店铺
+        if ($user->store_id) {
+            return $this->failed('你已经有店铺了哦', 40001);
+        }
         $user->update([
             'store_id' => $request->input('store_id'),
         ]);

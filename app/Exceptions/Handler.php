@@ -6,6 +6,7 @@ use App\Http\Controllers\Traits\JsonResponse;
 use Exception;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Validation\ValidationException;
 
 class Handler extends ExceptionHandler
 {
@@ -53,6 +54,10 @@ class Handler extends ExceptionHandler
             case $exception instanceof AuthenticationException:
                 return $this->unauthorized('登录认证失败');
                 break;
+            case $exception instanceof ValidationException:
+                $errors = $exception->errors();
+                $error = array_shift($errors);
+                return $this->invalidation($error[0]);
         }
 
         return parent::render($request, $exception);

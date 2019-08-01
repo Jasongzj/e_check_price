@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductScan;
+use App\Http\Requests\ProductStore;
+use App\Http\Requests\ProductUpdate;
 use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\StoreProduct;
@@ -44,10 +47,10 @@ class ProductsController extends Controller
 
     /**
      * 添加商品
-     * @param Request $request
+     * @param ProductStore $request
      * @return mixed
      */
-    public function store(Request $request)
+    public function store(ProductStore $request)
     {
         $product = Product::query()->find($request->input('pid'));
         if (!$product) {
@@ -77,7 +80,6 @@ class ProductsController extends Controller
      * 商品详情
      * @param StoreProduct $storeProduct
      * @return mixed
-     * @throws \App\Exceptions\InvalidHttpException
      */
     public function show(StoreProduct $storeProduct)
     {
@@ -89,12 +91,12 @@ class ProductsController extends Controller
 
     /**
      * 通过条形码获取商品信息
-     * @param Request $request
+     * @param ProductScan $request
      * @param ProductService $service
      * @return mixed
      * @throws \App\Exceptions\BarcodeApiException
      */
-    public function scan(Request $request, ProductService $service)
+    public function scan(ProductScan $request, ProductService $service)
     {
         $user = Auth::guard('api')->user();
         $barcode = $request->input('barcode');
@@ -129,11 +131,11 @@ class ProductsController extends Controller
 
     /**
      * 更新商品信息
-     * @param Request $request
+     * @param ProductUpdate $request
      * @param StoreProduct $storeProduct
      * @return mixed
      */
-    public function update(Request $request, StoreProduct $storeProduct)
+    public function update(ProductUpdate $request, StoreProduct $storeProduct)
     {
         $attribute = $request->only([
             'alias', 'cost_price', 'selling_price',

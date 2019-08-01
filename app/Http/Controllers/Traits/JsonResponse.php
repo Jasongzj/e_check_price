@@ -163,6 +163,11 @@ trait JsonResponse
         return $this->failed($msg, $code, FoundationResponse::HTTP_NOT_FOUND, $data);
     }
 
+    public function invalidation($msg = 'Invalidation', $code = FoundationResponse::HTTP_UNPROCESSABLE_ENTITY, $data = [])
+    {
+        return $this->failed($msg, $code, FoundationResponse::HTTP_UNPROCESSABLE_ENTITY, $data);
+    }
+
     /**
      * @param string $msg
      * @param int $code
