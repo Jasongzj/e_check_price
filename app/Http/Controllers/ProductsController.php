@@ -60,14 +60,15 @@ class ProductsController extends Controller
         ]);
         $attribute['barcode'] = $product->barcode;
 
-        DB::transaction(function () use ($attribute, $product, $store) {
+        $storeProduct = DB::transaction(function () use ($attribute, $product, $store) {
             $storeProduct = new StoreProduct($attribute);
             $storeProduct->product()->associate($product);
             $storeProduct->store()->associate($store);
             $storeProduct->save();
+            return $storeProduct;
         });
 
-        return $this->message('保存成功');
+        return $this->success($storeProduct);
     }
 
     /**
@@ -148,7 +149,7 @@ class ProductsController extends Controller
         }
         $storeProduct->update($attribute);
 
-        return $this->message('更新成功');
+        return $this->success($storeProduct);
     }
 
     /**
