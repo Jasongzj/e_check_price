@@ -68,6 +68,8 @@ class ProductsController extends Controller
             return $storeProduct;
         });
 
+        $this->formatReturnColumn($storeProduct);
+
         return $this->success($storeProduct);
     }
 
@@ -79,11 +81,8 @@ class ProductsController extends Controller
      */
     public function show(StoreProduct $storeProduct)
     {
-        $storeProduct->load(['product:price,brand,supplier,standard']);
-        foreach ($storeProduct->product as $key => $value) {
-            $storeProduct->$key = $value;
-        }
-        unset($storeProduct->product);
+        $storeProduct->load(['product:id,price,brand,supplier,standard']);
+        $this->formatReturnColumn($storeProduct);
 
         return $this->success($storeProduct);
     }
@@ -149,6 +148,8 @@ class ProductsController extends Controller
         }
         $storeProduct->update($attribute);
 
+        $this->formatReturnColumn($storeProduct);
+
         return $this->success($storeProduct);
     }
 
@@ -163,5 +164,21 @@ class ProductsController extends Controller
         $url = asset('storage/' . $path);
 
         return $this->success($url);
+    }
+
+    /**
+     * 统一商品详情返回的字段内容
+     * @param StoreProduct $storeProduct
+     */
+    protected function formatReturnColumn(StoreProduct &$storeProduct)
+    {
+        $products = $storeProduct->product->toArray();
+        // 将通用商品的属性放到同一级
+        foreach ($products as $key => $value) {
+            if ($key != 'id') {
+                $storeProduct->$key = $value;
+            }
+        }
+        unset($storeProduct->product);
     }
 }
