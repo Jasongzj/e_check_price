@@ -50,9 +50,9 @@ class StoresController extends Controller
         if ($user->store_id) {
             return $this->failed('你已经有店铺了哦', 40001);
         }
-        $user->update([
-            'store_id' => $request->input('store_id'),
-        ]);
+        $user->store_id = $request->input('store_id');
+        $user->save();
+        
         return $this->message('添加成功');
     }
 
