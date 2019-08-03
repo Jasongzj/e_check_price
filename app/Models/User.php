@@ -17,7 +17,7 @@ class User extends Authenticatable implements JWTSubject
     protected $fillable = [
         'openid', 'nick_name', 'avatar_url',
         'gender', 'city', 'province', 'country',
-        'is_manager'
+        'is_manager', 'store_id',
     ];
 
     public function store()

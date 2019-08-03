@@ -3,8 +3,9 @@
 namespace App\Http\Requests;
 
 
-class ProductUpdate extends Request
+class ProductStoreRequest extends Request
 {
+
     public function rules()
     {
         return [

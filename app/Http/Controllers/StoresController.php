@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class StoresController extends Controller
 {
@@ -50,9 +51,10 @@ class StoresController extends Controller
         if ($user->store_id) {
             return $this->failed('你已经有店铺了哦', 40001);
         }
-        $user->store_id = $request->input('store_id');
-        $user->save();
+        Log::debug('店铺ID：' . $request->input('store_id'));
         
+        $user->update(['store_id' => $request->input('store_id')]);
+
         return $this->message('添加成功');
     }
 
@@ -65,6 +67,10 @@ class StoresController extends Controller
     public function delClerk(User $clerk)
     {
         $user = Auth::guard('api')->user();
+        if ($clerk->id == $user->id) {
+            return $this->failed('不能移除自己哦', 40007);
+        }
+
         if (!$user->is_manager) {
             return $this->failed('你不是店长哦', 40002);
         }

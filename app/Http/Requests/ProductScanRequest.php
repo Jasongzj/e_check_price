@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class ProductScan extends Request
+class ProductScanRequest extends Request
 {
     public function rules()
     {
