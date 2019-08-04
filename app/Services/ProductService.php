@@ -14,6 +14,12 @@ use Illuminate\Support\Facades\Log;
 
 class ProductService extends AbstractService
 {
+    /**
+     * 保存在线api返回的商品信息
+     * @param $barcode
+     * @return \Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Eloquent\Model
+     * @throws BarcodeApiException
+     */
     public function storeOnlineProduct($barcode)
     {
         $url = 'https://www.mxnzp.com/api/barcode/goods/details';
@@ -29,6 +35,8 @@ class ProductService extends AbstractService
         // 保存商品至数据库
         $data = $response['data'];
         $data['name'] = $data['goodsName'];
+        // 过滤空值
+        $data = array_filter($data);
         $product = Product::query()->create($data);
 
         return $product;
