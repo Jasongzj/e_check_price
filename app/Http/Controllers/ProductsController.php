@@ -83,7 +83,7 @@ class ProductsController extends Controller
      */
     public function show(StoreProduct $storeProduct)
     {
-        $storeProduct->load(['product:id,price,brand,supplier,standard']);
+        $storeProduct->load(['product:id,name,price,brand,supplier,standard']);
         $this->formatReturnColumn($storeProduct);
 
         return $this->success($storeProduct);
