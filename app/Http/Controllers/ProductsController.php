@@ -148,7 +148,9 @@ class ProductsController extends Controller
         if ($storeProduct->img && $attribute['img'] != $storeProduct->img) {
             $storagePrefix = asset('storage');
             $imgPath = Str::replaceFirst($storagePrefix, storage_path('app/public'), $storeProduct->img);
-            unlink($imgPath);
+            if (file_exists($imgPath)) {
+                unlink($imgPath);
+            }
         }
         $storeProduct->update($attribute);
 
