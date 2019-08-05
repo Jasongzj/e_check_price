@@ -24,6 +24,7 @@ class ProductsController extends Controller
      */
     public function index(Request $request)
     {
+        $user = Auth::guard('api')->user();
         $query = StoreProduct::query()
             ->join('products', function (JoinClause $join) use ($request) {
                 $join->on('store_products.product_id', '=', 'products.id');
@@ -31,6 +32,7 @@ class ProductsController extends Controller
                     $join->where('name', 'like', '%' . $name . '%');
                 }
             })
+            ->where('store_id', $user->store_id)
             ->select([
                 'store_products.*', 'products.name', 'products.supplier', 'products.price',
                 'products.brand', 'products.standard',
