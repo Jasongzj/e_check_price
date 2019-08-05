@@ -17,7 +17,7 @@ class CreateProductsTable extends Migration
             $table->bigIncrements('id');
             $table->string('name')->comment('商品名称');
             $table->string('barcode')->comment('条形码数据');
-            $table->decimal('price', 10, 2)->nullable()->comment('线上售价');
+            $table->string('price')->nullable()->comment('线上售价');
             $table->string('brand')->nullable()->comment('品牌');
             $table->string('supplier')->nullable()->comment('供应商');
             $table->string('standard')->nullable()->comment('规格');
