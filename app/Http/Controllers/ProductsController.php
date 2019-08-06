@@ -173,6 +173,23 @@ class ProductsController extends Controller
     }
 
     /**
+     * 删除商品
+     * @param StoreProduct $storeProduct
+     * @return mixed
+     * @throws \Exception
+     */
+    public function destroy(StoreProduct $storeProduct)
+    {
+        $user = Auth::guard('api')->user();
+        if ($storeProduct->store_id != $user->store_id) {
+            return $this->forbidden('这不是你店铺的商品哦');
+        }
+
+        $storeProduct->delete();
+        return $this->success('删除成功');
+    }
+
+    /**
      * 统一商品详情返回的字段内容
      * @param StoreProduct $storeProduct
      */

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\ClerkResource;
 use App\Models\Store;
+use App\Models\StoreProduct;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -111,5 +112,29 @@ class StoresController extends Controller
         $url = asset('storage/' . $path);
 
         return $this->success($url);
+    }
+
+    /**
+     * 注销店铺
+     * @return mixed
+     */
+    public function destroy()
+    {
+        $storeId = Auth::guard('api')->user->store_id;
+        DB::transaction(function () use ($storeId) {
+            // 删除店内商品
+            StoreProduct::query()->where('store_id', $storeId)
+                ->delete();
+            // 注销店铺
+            Store::query()->where('id', $storeId)->delete();
+            // 移除所有店员
+            User::query()->where('store_id', $storeId)
+                ->update([
+                    'store_id' => null,
+                    'is_manager' => 0,
+                ]);
+        });
+
+        return $this->success('移除成功');
     }
 }
