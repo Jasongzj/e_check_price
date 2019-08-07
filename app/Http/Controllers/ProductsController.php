@@ -29,7 +29,10 @@ class ProductsController extends Controller
             ->join('products', function (JoinClause $join) use ($request) {
                 $join->on('store_products.product_id', '=', 'products.id');
                 if ($name = $request->input('name')) {
-                    $join->where('name', 'like', '%' . $name . '%');
+                    $join->where(function ($query) use ($name) {
+                        $query->where('name', 'like', '%' . $name . '%')
+                            ->orWhere('store_products.alias', 'like', '%' . $name . '%');
+                    });
                 }
             })
             ->where('store_id', $user->store_id)
@@ -37,10 +40,6 @@ class ProductsController extends Controller
                 'store_products.*', 'products.name', 'products.supplier', 'products.price',
                 'products.brand', 'products.standard',
             ]);
-
-        if ($name = $request->input('name')) {
-            $query->orWhere('alias', 'like', '%' . $name . '%');
-        }
 
         $data = $query->paginate();
 
