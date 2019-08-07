@@ -9,6 +9,7 @@ use App\Http\Resources\ProductResource;
 use App\Models\Product;
 use App\Models\StoreProduct;
 use App\Services\ProductService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -28,18 +29,19 @@ class ProductsController extends Controller
         $query = StoreProduct::query()
             ->join('products', function (JoinClause $join) use ($request) {
                 $join->on('store_products.product_id', '=', 'products.id');
-                if ($name = $request->input('name')) {
-                    $join->where(function ($query) use ($name) {
-                        $query->where('name', 'like', '%' . $name . '%')
-                            ->orWhere('store_products.alias', 'like', '%' . $name . '%');
-                    });
-                }
             })
             ->where('store_id', $user->store_id)
             ->select([
                 'store_products.*', 'products.name', 'products.supplier', 'products.price',
                 'products.brand', 'products.standard',
             ]);
+
+        if ($name = $request->input('name')) {
+            $query->where(function (Builder $query) use ($name) {
+                $query->where('products.name', 'like', '%' . $name . '%')
+                    ->orWhere('store_products.alias', 'like', '%' . $name . '%');
+            });
+        }
 
         $data = $query->paginate();
 
