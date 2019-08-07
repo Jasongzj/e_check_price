@@ -39,7 +39,7 @@ class ProductsController extends Controller
             ]);
 
         if ($name = $request->input('name')) {
-            $query->where('alias', 'like', '%' . $name . '%');
+            $query->orWhere('alias', 'like', '%' . $name . '%');
         }
 
         $data = $query->paginate();
