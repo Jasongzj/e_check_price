@@ -120,7 +120,12 @@ class StoresController extends Controller
      */
     public function destroy()
     {
-        $storeId = Auth::guard('api')->user->store_id;
+        $user = Auth::guard('api')->user();
+        if (!$user->is_manager) {
+            return $this->failed('你不是店长，不能注销店铺哦', 40010);
+        }
+        $storeId = $user->store_id;
+
         DB::transaction(function () use ($storeId) {
             // 删除店内商品
             StoreProduct::query()->where('store_id', $storeId)
