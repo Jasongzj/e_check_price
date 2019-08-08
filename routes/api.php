@@ -19,23 +19,32 @@ Route::group(['middleware' => 'auth:api'], function () {
     // 店铺管理
     Route::post('stores', 'StoresController@store');
     Route::post('stores/upload_img', 'StoresController@uploadImg');
-    Route::delete('stores', 'StoresController@destroy');
+    Route::delete('stores', 'StoresController@destroy')
+        ->middleware('has_store');
 
-    // 店员列表
-    Route::get('stores/clerks', 'StoresController@clerksIndex');
-    Route::post('stores/clerks', 'StoresController@addClerk');
-    Route::delete('stores/clerks/{clerk}', 'StoresController@delClerk');
+    // 店员
+    Route::get('stores/clerks', 'StoresController@clerksIndex')
+        ->middleware('has_store');
+    Route::post('stores/clerks', 'StoresController@addClerk')
+        ->middleware('has_store');
+    Route::delete('stores/clerks/{clerk}', 'StoresController@delClerk')
+        ->middleware('has_store');
 
     // 商品管理
-    Route::get('products', 'ProductsController@index');
-    Route::post('products', 'ProductsController@store');
+    Route::get('products', 'ProductsController@index')
+        ->middleware('has_store');
+    Route::post('products', 'ProductsController@store')
+        ->middleware('has_store');
 
     // 扫码查看商品
     Route::get('products/scan', 'ProductsController@scan');
-    Route::get('products/{store_product}', 'ProductsController@show');
+    Route::get('products/{store_product}', 'ProductsController@show')
+        ->middleware('has_store');
     Route::post('products/upload_img', 'ProductsController@uploadImg');
-    Route::put('products/{store_product}', 'ProductsController@update');
-    Route::delete('products/{store_product}', 'ProductsController@destroy');
+    Route::put('products/{store_product}', 'ProductsController@update')
+        ->middleware('has_store');
+    Route::delete('products/{store_product}', 'ProductsController@destroy')
+        ->middleware('has_store');
 
     Route::post('users/info', 'UsersController@updateInfo');
 });
