@@ -127,17 +127,18 @@ class StoresController extends Controller
         $storeId = $user->store_id;
 
         DB::transaction(function () use ($storeId) {
-            // 删除店内商品
-            StoreProduct::query()->where('store_id', $storeId)
-                ->delete();
-            // 注销店铺
-            Store::query()->where('id', $storeId)->delete();
             // 移除所有店员
             User::query()->where('store_id', $storeId)
                 ->update([
                     'store_id' => null,
                     'is_manager' => 0,
                 ]);
+            // 删除店内商品
+            StoreProduct::query()->where('store_id', $storeId)
+                ->delete();
+            // 注销店铺
+            Store::query()->where('id', $storeId)->delete();
+
         });
 
         return $this->success('移除成功');
