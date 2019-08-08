@@ -25,8 +25,9 @@ Route::group(['middleware' => 'auth:api'], function () {
     // 店员
     Route::get('stores/clerks', 'StoresController@clerksIndex')
         ->middleware('has_store');
-    Route::post('stores/clerks', 'StoresController@addClerk')
-        ->middleware('has_store');
+    
+    Route::post('stores/clerks', 'StoresController@addClerk');
+
     Route::delete('stores/clerks/{clerk}', 'StoresController@delClerk')
         ->middleware('has_store');
 
