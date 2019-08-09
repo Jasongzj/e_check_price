@@ -57,7 +57,7 @@ class ProductsController extends Controller
     {
         $product = Product::query()->find($request->input('pid'));
         if (!$product) {
-            return $this->failed('你要添加的商品不存在', 40004);
+            return $this->notFound('你要添加的商品不存在', 40004);
         }
         $store = Auth::guard('api')->user()->store;
         $attribute = $request->only([

@@ -22,7 +22,7 @@ class StoresController extends Controller
     {
         $user = Auth::guard('api')->user();
         if ($user->store) {
-            return $this->failed('你已经有店铺了哦', 40001);
+            return $this->forbidden('你已经有店铺了哦', 40001);
         }
 
         $attribute = $request->only(['name', 'img']);
@@ -50,7 +50,7 @@ class StoresController extends Controller
         $user = Auth::guard('api')->user();
         // 判断用户是否有店铺
         if ($user->store_id) {
-            return $this->failed('你已经有店铺了哦', 40001);
+            return $this->forbidden('你已经有店铺了哦', 40001);
         }
         Log::debug('店铺ID：' . $request->input('store_id'));
         
@@ -69,14 +69,13 @@ class StoresController extends Controller
     {
         $user = Auth::guard('api')->user();
         if ($clerk->id == $user->id) {
-            return $this->failed('不能移除自己哦', 40007);
+            return $this->forbidden('不能移除自己哦', 40007);
         }
-
         if (!$user->is_manager) {
-            return $this->failed('你不是店长哦', 40002);
+            return $this->forbidden('你不是店长哦', 40002);
         }
         if ($user->store_id != $clerk->store_id) {
-            return $this->failed('该用户不是你的店员', 40006);
+            return $this->forbidden('该用户不是你的店员', 40006);
         }
 
         $clerk->update(['store_id' => null]);
@@ -90,7 +89,7 @@ class StoresController extends Controller
     {
         $user = Auth::guard('api')->user();
         if (!$user->is_manager) {
-            return $this->failed('你不是店长哦',40002);
+            return $this->forbidden('你不是店长哦',40002);
         }
 
         $clerks = User::query()->where('store_id', $user->store_id)
@@ -122,7 +121,7 @@ class StoresController extends Controller
     {
         $user = Auth::guard('api')->user();
         if (!$user->is_manager) {
-            return $this->failed('你不是店长，不能注销店铺哦', 40010);
+            return $this->forbidden('你不是店长，不能注销店铺哦', 40010);
         }
         $storeId = $user->store_id;
 

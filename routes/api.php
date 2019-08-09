@@ -25,7 +25,7 @@ Route::group(['middleware' => 'auth:api'], function () {
     // 店员
     Route::get('stores/clerks', 'StoresController@clerksIndex')
         ->middleware('has_store');
-    
+
     Route::post('stores/clerks', 'StoresController@addClerk');
 
     Route::delete('stores/clerks/{clerk}', 'StoresController@delClerk')
@@ -39,6 +39,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
     // 扫码查看商品
     Route::get('products/scan', 'ProductsController@scan');
+
     Route::get('products/{store_product}', 'ProductsController@show')
         ->middleware('has_store');
     Route::post('products/upload_img', 'ProductsController@uploadImg');
