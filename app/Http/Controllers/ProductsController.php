@@ -6,6 +6,7 @@ use App\Http\Requests\ProductScanRequest;
 use App\Http\Requests\ProductStoreRequest;
 use App\Http\Requests\ProductUpdateRequest;
 use App\Http\Resources\ProductResource;
+use App\Map\ErrcodeMap;
 use App\Models\Product;
 use App\Models\StoreProduct;
 use App\Services\ProductService;
@@ -57,7 +58,7 @@ class ProductsController extends Controller
     {
         $product = Product::query()->find($request->input('pid'));
         if (!$product) {
-            return $this->notFound('你要添加的商品不存在', 40004);
+            return $this->notFound('你要添加的商品不存在', 404);
         }
         $store = Auth::guard('api')->user()->store;
         $attribute = $request->only([
@@ -183,7 +184,7 @@ class ProductsController extends Controller
     {
         $user = Auth::guard('api')->user();
         if ($storeProduct->store_id != $user->store_id) {
-            return $this->forbidden('这不是你店铺的商品哦');
+            return $this->forbidden(ErrcodeMap::$errcode[ErrcodeMap::NOT_YOUR_PROD], ErrcodeMap::NOT_YOUR_PROD);
         }
 
         $storeProduct->delete();

@@ -15,7 +15,7 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('name')->comment('商品名称');
+            $table->string('name')->nullable()->comment('商品名称');
             $table->string('barcode')->comment('条形码数据');
             $table->string('price')->nullable()->comment('线上售价');
             $table->string('brand')->nullable()->comment('品牌');

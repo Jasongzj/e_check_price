@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use App\Http\Controllers\Traits\JsonResponse;
+use App\Map\ErrcodeMap;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,7 @@ class CheckStore
         $user = Auth::guard('api')->user();
 
         if (!$user->store_id) {
-            return $this->failed('你还没有店铺，无法操作', 40011);
+            return $this->failed(ErrcodeMap::$errcode[ErrcodeMap::NO_STORE], ErrcodeMap::NO_STORE);
         }
 
         return $next($request);
