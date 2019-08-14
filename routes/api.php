@@ -23,15 +23,15 @@ Route::group(['middleware' => 'auth:api'], function () {
         ->middleware('has_store');
 
     // 店员操作
-    Route::get('clerks', 'ClerksController@index')
+    Route::get('stores/clerks', 'ClerksController@index')
         ->middleware('has_store');
 
-    Route::post('clerks', 'ClerksController@store');
+    Route::post('stores/clerks', 'ClerksController@store');
 
     Route::delete('clerks/quit', 'ClerksController@quit')
         ->middleware('has_store');
 
-    Route::delete('clerks/{clerk}', 'ClerksController@destroy')
+    Route::delete('stores/clerks/{clerk}', 'ClerksController@destroy')
         ->middleware('has_store');
 
     // 商品管理
