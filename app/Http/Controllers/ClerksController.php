@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ClerkAdded;
 use App\Http\Resources\ClerkResource;
 use App\Map\ErrcodeMap;
+use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class ClerksController extends Controller
 {
@@ -45,6 +48,11 @@ class ClerksController extends Controller
 
         $user->update(['store_id' => $request->input('store_id')]);
 
+        $store = Store::query()->find($request->input('store_id'));
+
+        // 发送店员加入店铺通知
+        // event(new ClerkAdded($store, $user));
+
         return $this->message('添加成功');
     }
 
@@ -74,7 +82,7 @@ class ClerksController extends Controller
      * 店员退出店铺
      * @return mixed
      */
-    public function quit()
+    public function quit(Request $request)
     {
         $user = Auth::guard('api')->user();
         if ($user->is_manager) {
@@ -82,7 +90,23 @@ class ClerksController extends Controller
         }
         $user->store_id = NULL;
         $user->save();
+
+        // 发送退出店铺通知
+
         return $this->message('退出成功');
     }
 
+    /**
+     * 保存点击表单的FormId
+     * @param Request $request
+     * @return mixed
+     */
+    public function storeFormId(Request $request)
+    {
+        $user = Auth::guard('api')->user();
+        $expiredAt = Carbon::now()->addDays(7)->getTimestamp();
+        // 在队列尾部插入新的form_id
+        \Redis::zadd('form_id_of_'. $user->id, $expiredAt, $request->input('form_id'));
+        return $this->message('保存成功');
+    }
 }

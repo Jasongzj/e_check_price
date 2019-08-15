@@ -87,4 +87,27 @@ class WechatService extends AbstractService
         }
         throw new WechatException($response['errmsg'], $response['errcode']);
     }
+
+    /**
+     * 发送模版消息
+     * @param $toUser
+     * @param $templateId
+     * @param $page
+     * @param $formId
+     * @param array $message
+     * @throws WechatException
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
+     */
+    public function sendTemplateMessage($toUser, $templateId, $formId, $message, $page = '')
+    {
+        $templateOption = [
+            'touser' => $toUser,
+            'template_id' => $templateId,
+            'page' => $page,
+            'form_id' => $formId,
+            'data' => $message,
+        ];
+        $response = $this->getMiniProgram()->template_message->send($templateOption);
+        $this->checkResponse($response);
+    }
 }

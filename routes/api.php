@@ -13,44 +13,31 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('wx_auth', 'AuthController@wxAuth');
+Route::get('wx_auth', 'AuthController@wxAuth');   // 微信授权登录
 
 Route::group(['middleware' => 'auth:api'], function () {
-    // 店铺管理
-    Route::post('stores', 'StoresController@store');
-    Route::post('stores/upload_img', 'StoresController@uploadImg');
-    Route::delete('stores', 'StoresController@destroy')
-        ->middleware('has_store');
+    Route::post('stores', 'StoresController@store');  // 添加店铺
+    Route::post('stores/upload_img', 'StoresController@uploadImg');  // 添加店铺图片
+    Route::post('stores/clerks', 'ClerksController@store');  // 成为店员
+    Route::post('users/info', 'UsersController@updateInfo'); // 更新用户数据
 
-    // 店员操作
-    Route::get('stores/clerks', 'ClerksController@index')
-        ->middleware('has_store');
+    Route::group(['middleware' => 'has_store'], function () {
+        Route::delete('stores', 'StoresController@destroy');  // 注销店铺
 
-    Route::post('stores/clerks', 'ClerksController@store');
+        Route::get('stores/clerks', 'ClerksController@index'); // 店员列表
+        Route::delete('clerks/quit', 'ClerksController@quit'); // 退出店铺
+        Route::delete('stores/clerks/{clerk}', 'ClerksController@destroy'); // 移除店员
+        Route::post('clerks/form_id', 'ClerksController@storeFormId');  // 保存店长的form_id
 
-    Route::delete('clerks/quit', 'ClerksController@quit')
-        ->middleware('has_store');
 
-    Route::delete('stores/clerks/{clerk}', 'ClerksController@destroy')
-        ->middleware('has_store');
+        Route::get('products', 'ProductsController@index'); // 商品列表
+        Route::get('products/{store_product}', 'ProductsController@show');  //商品详情
+        Route::post('products/upload_img', 'ProductsController@uploadImg'); // 上传商品图片
+        Route::post('products', 'ProductsController@store'); // 添加商品
+        Route::put('products/{store_product}', 'ProductsController@update'); // 更新商品
+        Route::delete('products/{store_product}', 'ProductsController@destroy'); // 删除商品
 
-    // 商品管理
-    Route::get('products', 'ProductsController@index')
-        ->middleware('has_store');
-    Route::post('products', 'ProductsController@store')
-        ->middleware('has_store');
-
-    // 扫码查看商品
-    Route::get('products/scan', 'ProductsController@scan');
-
-    Route::get('products/{store_product}', 'ProductsController@show')
-        ->middleware('has_store');
-    Route::post('products/upload_img', 'ProductsController@uploadImg');
-    Route::put('products/{store_product}', 'ProductsController@update')
-        ->middleware('has_store');
-    Route::delete('products/{store_product}', 'ProductsController@destroy')
-        ->middleware('has_store');
-
-    Route::post('users/info', 'UsersController@updateInfo');
+        Route::get('products/scan', 'ProductsController@scan');    // 扫码查看商品
+    });
 });
 
