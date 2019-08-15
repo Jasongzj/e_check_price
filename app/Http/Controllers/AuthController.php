@@ -15,6 +15,8 @@ class AuthController extends Controller
      * @param Request $request
      * @param WechatService $service
      * @return mixed
+     * @throws \App\Exceptions\WechatException
+     * @throws \EasyWeChat\Kernel\Exceptions\InvalidConfigException
      */
     public function wxAuth(Request $request, WechatService $service)
     {

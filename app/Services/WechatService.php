@@ -79,8 +79,8 @@ class WechatService extends AbstractService
             $fileContents = file_get_contents($localPath);
             // 上传七牛云
             $disk = Storage::disk('qiniu');
-            $disk->put('store_qr_code', $fileContents);
             $qiniuPath = 'store_qr_code/' . $filename;
+            $disk->put($qiniuPath, $fileContents);
             // 删除本地文件
             unlink($localPath);
             return $disk->getUrl($qiniuPath);

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\QiniuService;
 use Illuminate\Database\Eloquent\Model;
 
 class Store extends Model
@@ -16,5 +17,10 @@ class Store extends Model
     public function storeProduct()
     {
         return $this->hasMany(StoreProduct::class);
+    }
+
+    public function getQrCodeAttribute($value) {
+        $qiniuService = new QiniuService();
+        return $qiniuService->getAntiTheftUrl($value);
     }
 }
