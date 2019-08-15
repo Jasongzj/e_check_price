@@ -23,14 +23,14 @@ class GenerateStoreQrCode implements ShouldQueue
      * Handle the event.
      *
      * @param CreateStore $event
-     * @param WechatService $wechatService
      * @return void
      * @throws \App\Exceptions\WechatException
      * @throws \EasyWeChat\Kernel\Exceptions\InvalidArgumentException
      * @throws \EasyWeChat\Kernel\Exceptions\RuntimeException
      */
-    public function handle(CreateStore $event, WechatService $wechatService)
+    public function handle(CreateStore $event)
     {
+        $wechatService = new WechatService();
         // 获取店铺二维码地址
         $qrcode = $wechatService->getStoreQrCodeUrl($event->store->id);
         // 保存二维码地址
