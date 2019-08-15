@@ -18,6 +18,7 @@ Route::get('wx_auth', 'AuthController@wxAuth');   // 微信授权登录
 Route::group(['middleware' => 'auth:api'], function () {
     Route::post('stores', 'StoresController@store');  // 添加店铺
     Route::post('stores/upload_img', 'StoresController@uploadImg');  // 添加店铺图片
+    Route::get('stores/owner', 'StoresController@getOwner');  //获取店长信息
     Route::post('stores/clerks', 'ClerksController@store');  // 成为店员
     Route::post('users/info', 'UsersController@updateInfo'); // 更新用户数据
 

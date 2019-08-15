@@ -102,4 +102,20 @@ class StoresController extends Controller
 
         return $this->success('注销成功');
     }
+
+    /**
+     * 店长信息
+     * @param Request $request
+     * @return mixed
+     */
+    public function getOwner(Request $request)
+    {
+        $owner = User::query()
+            ->where('store_id', $request->input('store_id'))
+            ->where('is_manager', 1)
+            ->select(['id', 'nick_name', 'avatar_url'])
+            ->first();
+
+        return $this->success($owner);
+    }
 }
