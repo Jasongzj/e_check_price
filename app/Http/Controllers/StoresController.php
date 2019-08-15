@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\CreateStore;
 use App\Http\Resources\ClerkResource;
+use App\Jobs\generateStoreQrCode;
 use App\Map\ErrcodeMap;
 use App\Models\Store;
 use App\Models\StoreProduct;
@@ -10,7 +12,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class StoresController extends Controller
 {
@@ -28,15 +29,18 @@ class StoresController extends Controller
 
         $attribute = $request->only(['name', 'img']);
 
-        DB::transaction(function () use ($attribute, $user) {
+        $store = DB::transaction(function () use ($attribute, $user) {
             $store = new Store($attribute);
             $store->save();
-
 
             $user->store()->associate($store);
             $user->is_manager = true;
             $user->save();
+            return $store;
         });
+
+        // 异步生成店铺二维码
+        event(new CreateStore($store));
 
         return $this->message('保存成功');
     }

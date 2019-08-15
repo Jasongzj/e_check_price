@@ -45,5 +45,12 @@ abstract class AbstractService
         return self::$guzzleOptions = $config;
     }
 
-
+    /**
+     * 获取七牛云服务
+     * @return QiniuService
+     */
+    public function getQiniuService()
+    {
+        return new QiniuService();
+    }
 }

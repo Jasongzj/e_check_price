@@ -71,6 +71,7 @@ class ClerksController extends Controller
     }
 
     /**
+     * 店员退出店铺
      * @return mixed
      */
     public function quit()
