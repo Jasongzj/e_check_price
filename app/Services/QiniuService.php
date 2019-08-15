@@ -9,6 +9,7 @@
 namespace App\Services;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class QiniuService
 {
@@ -30,10 +31,31 @@ class QiniuService
     public function getAntiTheftUrl($url)
     {
         $expired = dechex(Carbon::now()->addMinutes(60)->getTimestamp());
-        $path = substr($url, strlen($this->domain));
+        $path = $this->getFilePath($url);
         $encodePath = str_replace('%2F', '/', urlencode($path));
         $sign = strtolower(md5($this->key . $encodePath . $expired));
         $antiTheftUrl = $url . '?sign=' . $sign . '&t=' . $expired;
         return $antiTheftUrl;
+    }
+
+    /**
+     * 删除七牛的文件
+     * @param $url
+     */
+    public function deleteFile($url)
+    {
+        $disk = Storage::disk('qiniu');
+        $path = $this->getFilePath($url);
+        $disk->delete($path);
+    }
+
+    /**
+     * 获取不带域名的文件路径
+     * @param $url
+     * @return bool|string
+     */
+    protected function getFilePath($url)
+    {
+        return substr($url, strlen($this->domain));
     }
 }

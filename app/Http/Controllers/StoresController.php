@@ -9,9 +9,11 @@ use App\Map\ErrcodeMap;
 use App\Models\Store;
 use App\Models\StoreProduct;
 use App\Models\User;
+use App\Services\QiniuService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class StoresController extends Controller
 {
@@ -62,7 +64,7 @@ class StoresController extends Controller
      * 注销店铺
      * @return mixed
      */
-    public function destroy()
+    public function destroy(QiniuService $qiniuService)
     {
         $user = Auth::guard('api')->user();
         if (!$user->is_manager) {
@@ -70,7 +72,7 @@ class StoresController extends Controller
         }
         $storeId = $user->store_id;
 
-        DB::transaction(function () use ($storeId) {
+        DB::transaction(function () use ($storeId, $qiniuService) {
             $store = Store::query()->find($storeId);
             // 移除所有店员
             User::query()->where('store_id', $storeId)
@@ -83,8 +85,14 @@ class StoresController extends Controller
                 ->delete();
 
             // 删除店铺图片
+            $domain = config('app.url');
+            $imgPath = substr($store->img,strlen($domain));
+            if (file_exists($imgPath)) {
+                unlink($imgPath);
+            }
 
             // 删除店铺二维码
+            $qiniuService->deleteFile($store->qr_code);
 
             // 注销店铺
             Store::query()->where('id', $storeId)->delete();
