@@ -19,6 +19,7 @@ class ErrcodeMap
     const OWNER_CANNOT_QUIT = 40006;
     const NO_STORE = 40007;
     const STORE_CANCELLED = 40008;
+    const NO_PERMISSION = 40009;
 
     public static $errcode = [
         self::STORE_EXIST => '你已经有店铺了哦',
@@ -29,5 +30,6 @@ class ErrcodeMap
         self::OWNER_CANNOT_QUIT => '店长不能退出店铺，可以去注销',
         self::NO_STORE => '你还没有店铺，无法操作',
         self::STORE_CANCELLED => '店铺已经注销，无法加入',
+        self::NO_PERMISSION => '暂无权限',
     ];
 }

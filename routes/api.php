@@ -35,9 +35,15 @@ Route::group(['middleware' => 'auth:api'], function () {
         Route::get('products', 'ProductsController@index'); // 商品列表
         Route::get('products/{store_product}', 'ProductsController@show');  //商品详情
         Route::post('products/upload_img', 'ProductsController@uploadImg'); // 上传商品图片
-        Route::post('products', 'ProductsController@store'); // 添加商品
-        Route::put('products/{store_product}', 'ProductsController@update'); // 更新商品
-        Route::delete('products/{store_product}', 'ProductsController@destroy'); // 删除商品
+
+        Route::post('products', 'ProductsController@store')
+            ->middleware('has_permission:products_add');  // 添加商品
+
+        Route::put('products/{store_product}', 'ProductsController@update')
+            ->middleware('has_permission:products_edit'); // 更新商品
+
+        Route::delete('products/{store_product}', 'ProductsController@destroy')
+            ->middleware('has_permission:products_delete'); // 删除商品
 
         Route::get('products/scan', 'ProductsController@scan');    // 扫码查看商品
     });
