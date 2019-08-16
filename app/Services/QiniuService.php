@@ -45,7 +45,8 @@ class QiniuService
     public function deleteFile($url)
     {
         $disk = Storage::disk('qiniu');
-        $path = $this->getFilePath($url);
+        $path = substr($url, strlen($this->domain) + 1);  // 不带根路径
+        logger('qiniu file path = ' . $path);
         $disk->delete($path);
     }
 

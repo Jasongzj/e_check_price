@@ -92,7 +92,7 @@ class StoresController extends Controller
             }
 
             // 删除店铺二维码
-            $qiniuService->deleteFile($store->qr_code);
+            $qiniuService->deleteFile($store->getOriginal('qr_code'));
 
             // 注销店铺
             Store::query()->where('id', $storeId)->delete();
