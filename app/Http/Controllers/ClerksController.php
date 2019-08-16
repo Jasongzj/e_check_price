@@ -46,10 +46,14 @@ class ClerksController extends Controller
         }
         Log::debug('店铺ID：' . $request->input('store_id'));
 
-        $user->update(['store_id' => $request->input('store_id')]);
-
+        // 判断店铺是否还存在
         $store = Store::query()->find($request->input('store_id'));
+        if (!$store) {
+            return $this->forbidden(ErrcodeMap::$errcode[ErrcodeMap::STORE_CANCELLED], ErrcodeMap::STORE_CANCELLED);
+        }
 
+        $user->update(['store_id' => $request->input('store_id')]);
+        
         // 发送店员加入店铺通知
         // event(new ClerkAdded($store, $user));
 
