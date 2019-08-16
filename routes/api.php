@@ -25,11 +25,12 @@ Route::group(['middleware' => 'auth:api'], function () {
     Route::group(['middleware' => 'has_store'], function () {
         Route::delete('stores', 'StoresController@destroy');  // 注销店铺
 
-        Route::get('stores/clerks', 'ClerksController@index'); // 店员列表
         Route::delete('clerks/quit', 'ClerksController@quit'); // 退出店铺
+        Route::get('stores/clerks', 'ClerksController@index'); // 店员列表
         Route::delete('stores/clerks/{clerk}', 'ClerksController@destroy'); // 移除店员
         Route::post('clerks/form_id', 'ClerksController@storeFormId');  // 保存店长的form_id
 
+        Route::post('permissions', 'PermissionsController@store'); // 配置店员权限
 
         Route::get('products', 'ProductsController@index'); // 商品列表
         Route::get('products/{store_product}', 'ProductsController@show');  //商品详情

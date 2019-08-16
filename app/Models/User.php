@@ -25,6 +25,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Store::class);
     }
 
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'user_permissions');
+    }
+
 
     public function getJWTIdentifier()
     {

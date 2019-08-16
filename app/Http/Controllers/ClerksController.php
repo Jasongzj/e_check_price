@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\ClerkAdded;
 use App\Http\Resources\ClerkResource;
 use App\Map\ErrcodeMap;
+use App\Models\Permission;
 use App\Models\Store;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -24,10 +25,24 @@ class ClerksController extends Controller
             return $this->forbidden(ErrcodeMap::$errcode[ErrcodeMap::NOT_OWNER], ErrcodeMap::NOT_OWNER);
         }
 
-        $clerks = User::query()->where('store_id', $user->store_id)
+        $clerks = User::query()->with('permissions')
+            ->where('store_id', $user->store_id)
             ->where('is_manager', 0)
             ->select(['id', 'store_id', 'is_manager', 'nick_name', 'avatar_url'])
             ->paginate();
+
+        // 获取店员的权限配置
+        $permissions = Permission::query()->get(['id', 'name', 'slug', 'icon_color', 'icon_name']);
+
+        foreach ($clerks as $clerk) {
+            $clerkPermission = $clerk->permissions->pluck('id')->all();
+
+            foreach ($permissions as $permission) {
+                 $permission->status = in_array($permission->id, $clerkPermission) ? 1 : 0;
+            }
+            $clerk->auths = $permissions;
+            unset($clerk->permissions);
+        }
 
         return ClerkResource::collection($clerks);
     }
@@ -53,7 +68,7 @@ class ClerksController extends Controller
         }
 
         $user->update(['store_id' => $request->input('store_id')]);
-        
+
         // 发送店员加入店铺通知
         // event(new ClerkAdded($store, $user));
 
