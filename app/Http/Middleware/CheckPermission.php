@@ -20,7 +20,7 @@ class CheckPermission
     public function handle($request, Closure $next, $permission)
     {
         $user = Auth::guard('api')->user();
-        if (!$user->permissions->contains('name', $permission) || !$user->is_manager) {
+        if (!$user->permissions->contains('name', $permission) && !$user->is_manager) {
             return $this->forbidden(ErrcodeMap::$errcode[ErrcodeMap::NO_PERMISSION], ErrcodeMap::NO_PERMISSION);
         }
         return $next($request);
