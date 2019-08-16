@@ -69,7 +69,7 @@ class WechatService extends AbstractService
     {
         // 邀请加入页面
         $response = $this->getMiniProgram()->app_code->getUnlimit($storeId, [
-            'page' => 'pages/clerks_add/clerks_add',
+            'path' => 'pages/clerks_add/clerks_add',
             'width' => 400,
         ]);
         if ($response instanceof StreamResponse) {
