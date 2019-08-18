@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Events\CreateStore;
+use App\Http\Requests\CreateStoreRequest;
 use App\Http\Resources\ClerkResource;
 use App\Jobs\generateStoreQrCode;
 use App\Map\ErrcodeMap;
@@ -19,10 +20,10 @@ class StoresController extends Controller
 {
     /**
      * 创建店铺
-     * @param Request $request
+     * @param CreateStoreRequest $request
      * @return mixed
      */
-    public function store(Request $request)
+    public function store(CreateStoreRequest $request)
     {
         $user = Auth::guard('api')->user();
         if ($user->store) {

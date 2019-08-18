@@ -20,6 +20,9 @@ class Store extends Model
     }
 
     public function getQrCodeAttribute($value) {
+        if (!$value) {
+            return $value;
+        }
         $qiniuService = new QiniuService();
         return $qiniuService->getAntiTheftUrl($value);
     }
