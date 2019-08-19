@@ -30,4 +30,11 @@ class StoreProduct extends Model
         $qiniuService = new QiniuService();
         return $qiniuService->getAntiTheftUrl($value);
     }
+
+    public function getAliasAttribute($value) {
+        if (is_null($value)) {
+            return '';
+        }
+        return $value;
+    }
 }
