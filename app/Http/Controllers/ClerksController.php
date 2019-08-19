@@ -28,19 +28,20 @@ class ClerksController extends Controller
         $clerks = User::query()->with('permissions')
             ->where('store_id', $user->store_id)
             ->where('is_manager', 0)
-            ->select(['id', 'store_id', 'is_manager', 'nick_name', 'avatar_url'])
+            ->select(['id', 'store_id', 'nick_name', 'avatar_url'])
             ->paginate();
 
         // 获取店员的权限配置
-        $permissions = Permission::query()->get(['id', 'name', 'slug', 'icon_color', 'icon_name']);
+        $permissions = Permission::query()->get(['id', 'name', 'slug', 'icon_color', 'icon_name'])->toArray();
 
         foreach ($clerks as $clerk) {
             $clerkPermission = $clerk->permissions->pluck('id')->all();
 
-            foreach ($permissions as $permission) {
-                 $permission->status = in_array($permission->id, $clerkPermission) ? 1 : 0;
+            foreach ($permissions as &$permission) {
+                 $permission['status'] = in_array($permission['id'], $clerkPermission) ? 1 : 0;
             }
             $clerk->auths = $permissions;
+            unset($permission);
             unset($clerk->permissions);
         }
 
