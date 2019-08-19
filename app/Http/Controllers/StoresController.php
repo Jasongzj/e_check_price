@@ -56,11 +56,7 @@ class StoresController extends Controller
      */
     public function uploadImg(Request $request)
     {
-        $qiniuPath = 'stores/' . Str::random() . '.' . $request->file('img')->getExtension();
-        $disk = Storage::disk('qiniu');
-        // 上传图片
-        $disk->putFile($qiniuPath, $request->file('img'));
-        $url = $disk->getUrl($qiniuPath);
+        $url = $this->uploadRequestImg('stores', $request->file('img'));
 
         return $this->success($url);
     }
