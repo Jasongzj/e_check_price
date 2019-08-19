@@ -15,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class StoresController extends Controller
 {
@@ -55,14 +56,18 @@ class StoresController extends Controller
      */
     public function uploadImg(Request $request)
     {
-        $path = $request->file('img')->store('stores', 'public');
-        $url = asset('storage/' . $path);
+        $qiniuPath = 'stores/' . Str::random() . '.' . $request->file('img')->getExtension();
+        $disk = Storage::disk('qiniu');
+        // 上传图片
+        $disk->putFile($qiniuPath, $request->file('img'));
+        $url = $disk->getUrl($qiniuPath);
 
         return $this->success($url);
     }
 
     /**
      * 注销店铺
+     * @param QiniuService $qiniuService
      * @return mixed
      */
     public function destroy(QiniuService $qiniuService)
@@ -86,11 +91,7 @@ class StoresController extends Controller
                 ->delete();
 
             // 删除店铺图片
-            $domain = config('app.url');
-            $imgPath = substr($store->img,strlen($domain));
-            if (file_exists($imgPath)) {
-                unlink($imgPath);
-            }
+            $qiniuService->deleteFile($store->getOriginal('img'));
 
             // 删除店铺二维码
             $qiniuService->deleteFile($store->getOriginal('qr_code'));

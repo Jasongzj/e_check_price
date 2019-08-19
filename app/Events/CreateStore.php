@@ -12,10 +12,11 @@ class CreateStore
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $store;
+
     /**
      * Create a new event instance.
      *
-     * @return void
+     * @param Store $store
      */
     public function __construct(Store $store)
     {

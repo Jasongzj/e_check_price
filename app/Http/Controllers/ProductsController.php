@@ -15,6 +15,7 @@ use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ProductsController extends Controller
@@ -168,8 +169,11 @@ class ProductsController extends Controller
      */
     public function uploadImg(Request $request)
     {
-        $path = $request->file('img')->store('products', 'public');
-        $url = asset('storage/' . $path);
+        $qiniuPath = 'store_products/' . Str::random() . '.' . $request->file('img')->getExtension();
+        $disk = Storage::disk('qiniu');
+        // 上传图片
+        $disk->putFile($qiniuPath, $request->file('img'));
+        $url = $disk->getUrl($qiniuPath);
 
         return $this->success($url);
     }
