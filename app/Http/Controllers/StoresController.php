@@ -76,7 +76,7 @@ class StoresController extends Controller
 
         DB::transaction(function () use ($storeId, $qiniuService) {
             $store = Store::query()->find($storeId);
-            
+
             // 移除所有店员
             User::query()->where('store_id', $storeId)
                 ->update([

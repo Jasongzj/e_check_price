@@ -139,22 +139,24 @@ class ProductsController extends Controller
      * 更新商品信息
      * @param ProductUpdateRequest $request
      * @param StoreProduct $storeProduct
+     * @param QiniuService $qiniuService
      * @return mixed
      */
-    public function update(ProductUpdateRequest $request, StoreProduct $storeProduct)
+    public function update(ProductUpdateRequest $request, StoreProduct $storeProduct, QiniuService $qiniuService)
     {
         $attribute = $request->only([
             'alias', 'cost_price', 'selling_price',
             'img',
         ]);
 
+        // 过滤图片地址的签名信息
+        if ($queryPos = strpos($attribute['img'], '?')) {
+            $attribute['img'] = substr($attribute['img'], 0, $queryPos);
+        }
+
         // 如果更换了图片地址，删除旧图片
         if ($storeProduct->img && $attribute['img'] != $storeProduct->img) {
-            $storagePrefix = asset('storage');
-            $imgPath = Str::replaceFirst($storagePrefix, storage_path('app/public'), $storeProduct->img);
-            if (file_exists($imgPath)) {
-                unlink($imgPath);
-            }
+            $qiniuService->deleteFile($storeProduct->getOriginal('img'));
         }
         $storeProduct->update($attribute);
 
