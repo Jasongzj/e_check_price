@@ -76,12 +76,22 @@ class StoresController extends Controller
 
         DB::transaction(function () use ($storeId, $qiniuService) {
             $store = Store::query()->find($storeId);
+            
             // 移除所有店员
             User::query()->where('store_id', $storeId)
                 ->update([
                     'store_id' => null,
                     'is_manager' => 0,
                 ]);
+
+            // 删除店铺商品图片
+            $storeProductImages = StoreProduct::query()->where('store_id', $storeId)
+                ->select(['img'])
+                ->get();
+            foreach ($storeProductImages as $image) {
+                $qiniuService->deleteFile($image->getOriginal('img'));
+            }
+
             // 删除店内商品
             StoreProduct::query()->where('store_id', $storeId)
                 ->delete();
