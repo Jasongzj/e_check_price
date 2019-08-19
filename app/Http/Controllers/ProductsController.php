@@ -170,10 +170,11 @@ class ProductsController extends Controller
      */
     public function uploadImg(Request $request)
     {
-        $qiniuPath = 'store_products/' . Str::random() . '.' . $request->file('img')->getExtension();
+        $filename = Str::random() . '.' . $request->file('img')->getExtension();
+        $qiniuPath = 'store_products/' . $filename;
         $disk = Storage::disk('qiniu');
         // 上传图片
-        $disk->putFile($qiniuPath, $request->file('img'));
+        $disk->putFileAs('store_products', $request->file('img'), $filename);
         $url = $disk->getUrl($qiniuPath);
 
         return $this->success($url);
