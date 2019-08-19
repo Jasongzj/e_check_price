@@ -58,6 +58,10 @@ class Handler extends ExceptionHandler
                 $errors = $exception->errors();
                 $error = array_shift($errors);
                 return $this->invalidation($error[0]);
+                break;
+            case $exception instanceof ModelNotFoundException:
+                return $this->notFound('请求对象不存在');
+                break;
         }
 
         return parent::render($request, $exception);
