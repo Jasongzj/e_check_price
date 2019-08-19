@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\QiniuService;
 use Illuminate\Database\Eloquent\Model;
 
 class StoreProduct extends Model
@@ -19,5 +20,14 @@ class StoreProduct extends Model
     public function store()
     {
         return $this->belongsTo(Store::class);
+    }
+
+    public function getImgAttribute($value)
+    {
+        if (!$value) {
+            return $value;
+        }
+        $qiniuService = new QiniuService();
+        return $qiniuService->getAntiTheftUrl($value);
     }
 }

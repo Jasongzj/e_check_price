@@ -19,7 +19,17 @@ class Store extends Model
         return $this->hasMany(StoreProduct::class);
     }
 
-    public function getQrCodeAttribute($value) {
+    public function getQrCodeAttribute($value)
+    {
+        if (!$value) {
+            return $value;
+        }
+        $qiniuService = new QiniuService();
+        return $qiniuService->getAntiTheftUrl($value);
+    }
+
+    public function getImgAttribute($value)
+    {
         if (!$value) {
             return $value;
         }

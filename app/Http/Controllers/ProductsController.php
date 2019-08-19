@@ -10,6 +10,7 @@ use App\Map\ErrcodeMap;
 use App\Models\Product;
 use App\Models\StoreProduct;
 use App\Services\ProductService;
+use App\Services\QiniuService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Illuminate\Http\Request;
@@ -184,14 +185,17 @@ class ProductsController extends Controller
      * @return mixed
      * @throws \Exception
      */
-    public function destroy(StoreProduct $storeProduct)
+    public function destroy(StoreProduct $storeProduct, QiniuService $qiniuService)
     {
         $user = Auth::guard('api')->user();
         if ($storeProduct->store_id != $user->store_id) {
             return $this->forbidden(ErrcodeMap::$errcode[ErrcodeMap::NOT_YOUR_PROD], ErrcodeMap::NOT_YOUR_PROD);
         }
 
+        // 删除商品图
+        $qiniuService->deleteFile($storeProduct->getOriginal('img'));
         $storeProduct->delete();
+
         return $this->success('删除成功');
     }
 
