@@ -17,8 +17,9 @@ Route::get('wx_auth', 'AuthController@wxAuth');   // 微信授权登录
 
 Route::group(['middleware' => 'auth:api'], function () {
 
-    Route::group(['middleware' => 'has_store'], function () {
+    Route::get('products/scan', 'ProductsController@scan');    // 扫码查看商品
 
+    Route::group(['middleware' => 'has_store'], function () {
         Route::delete('clerks/quit', 'ClerksController@quit'); // 退出店铺
         Route::get('stores/clerks', 'ClerksController@index'); // 店员列表
         Route::delete('stores/clerks/{clerk}', 'ClerksController@destroy'); // 移除店员
@@ -27,7 +28,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
         Route::post('permissions', 'PermissionsController@store'); // 配置店员权限
 
-        Route::get('products/scan', 'ProductsController@scan');    // 扫码查看商品
+
         Route::get('products/{store_product}', 'ProductsController@show');  //商品详情
         Route::post('products/upload_img', 'ProductsController@uploadImg'); // 上传商品图片
         Route::get('products', 'ProductsController@index'); // 商品列表
